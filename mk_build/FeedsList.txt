@@ -1,0 +1,12 @@
+#this file is the sample feeds for testing.
+Ars Technica	http://feeds.arstechnica.com/arstechnica/index
+BBC	http://feeds.bbci.co.uk/news/rss.xml?edition=int
+Venture Beat	http://feeds.venturebeat.com/VentureBeat
+CNN Top Stories	http://rss.cnn.com/rss/cnn_topstories.rss
+Slashdot	http://rss.slashdot.org/Slashdot/slashdot
+CNet	http://www.cnet.com/rss/news/
+Forbes Business	http://www.forbes.com/business/feed/
+Forbes Leadership	http://www.forbes.com/leadership/feed/
+Forbes Technology	http://www.forbes.com/technology/feed/
+Phoronix	http://www.phoronix.com/rss.php
+

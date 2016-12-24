@@ -1,0 +1,54 @@
+LALLEGRO_MONO := ../../../liblocal_gcc/liballegro/lib/liballegro_monolith-static.a
+IALLEGRO := ../../../liblocal_gcc/liballegro/include
+LDLIB := ../../../liblocal_gcc/libdlib/lib/libdlib.a
+IDLIB := ../../../liblocal_gcc/libdlib/include
+LSQL := ../../../liblocal_gcc/libsqlite/lib/libsqlite3.a
+ISQL := ../../../liblocal_gcc/libsqlite/include
+LXML := ../../../liblocal_gcc/libxml2/lib/libxml2.a
+IXML := ../../../liblocal_gcc/libxml2/include/libxml2
+LFreeType := ../../../liblocal_gcc/libfreetype/lib
+
+ISrc := ../src
+ISrcGraphics := $(ISrc)/Graphics
+ISrcProgram := $(ISrc)/Program
+ISrcData := $(ISrc)/Data
+
+CPPLink := $(CXX) -O3 
+CPPCompile := $(CXX) -std=c++14 -c -O3 
+#-Wextra -Wall -Wpedantic -Wconversion-null -Wctor-dtor-privacy -Wdelete-non-virtual-dtor -Wliteral-suffix -Wmultiple-inheritance -Wnarrowing -Wnoexcept -Wnon-virtual-dtor -Wreorder -Wstrict-null-sentinel -Wtemplates -Wno-non-template-friend  -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wvirtual-inheritance
+#Optmize -O3
+
+#Note on 12/14/2016 8:47pm, exe went from 6MB to 14MB with the addition of the sqlite and libxml2 libraries.
+
+#downside of make is no warnings if the filename is invalid.
+gautier_rss : obj/main.o obj/PrimaryDisplaySurfaceWindow.o obj/RssReader.o obj/InteractiveRegion.o obj/gautier_rss_model.o 
+	$(CPPLink) -L$(LFreeType) -o $@ obj/main.o obj/PrimaryDisplaySurfaceWindow.o obj/RssReader.o obj/InteractiveRegion.o obj/gautier_rss_model.o $(LALLEGRO_MONO) $(LDLIB) $(LSQL) $(LXML) `pkg-config --static --libs ../../../liblocal_gcc/liballegro/lib/pkgconfig/allegro_monolith-static-5.pc` `pkg-config --static --libs ../../../liblocal_gcc/libsqlite/lib/pkgconfig/sqlite3.pc`
+
+obj/InteractiveRegion.o : $(ISrcGraphics)/InteractiveRegion.cxx \
+	$(ISrcGraphics)/InteractiveRegion.hxx 
+	$(CPPCompile) -isystem $(IALLEGRO) -isystem $(IDLIB) -I$(ISrcGraphics) -o $@ $< 
+
+obj/PrimaryDisplaySurfaceWindow.o : $(ISrcGraphics)/PrimaryDisplaySurfaceWindow.cxx \
+	$(ISrcGraphics)/InteractionState.hxx \
+	$(ISrcGraphics)/PrimaryDisplaySurfaceWindow.hxx 
+	$(CPPCompile) -isystem $(IALLEGRO) -isystem $(IDLIB) -I$(ISrcGraphics) -o $@ $< 
+
+obj/RssReader.o : $(ISrcProgram)/RssReader.cxx \
+	$(ISrcGraphics)/PrimaryDisplaySurfaceWindow.hxx \
+	$(ISrcGraphics)/InteractiveRegion.hxx \
+	$(ISrcGraphics)/InteractionState.hxx \
+	$(ISrcData)/gautier_rss_model.hxx \
+	$(ISrcProgram)/RssReader.hxx 
+	$(CPPCompile) -isystem $(IALLEGRO) -isystem $(IDLIB) -isystem $(IXML) -isystem $(ISQL) -I$(ISrcGraphics) -I$(ISrcProgram) -I$(ISrcData) -o $@ $< 
+
+obj/gautier_rss_model.o : $(ISrcData)/gautier_rss_model.cxx \
+        $(ISrcData)/gautier_rss_model.hxx 
+	$(CPPCompile) -isystem $(ISQL) -isystem $(IXML) -I$(ISrcData) -o $@ $<
+
+obj/main.o : $(ISrc)/main.cxx \
+	$(ISrcProgram)/RssReader.hxx
+	rm -rf obj/ 
+	mkdir obj 
+	$(CPPCompile) -isystem $(IALLEGRO) -isystem $(IDLIB) -isystem $(IXML) -isystem $(ISQL) -I$(ISrcGraphics) -I$(ISrcProgram) -I$(ISrcData) -o $@ $< 
+
+#/*Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 . Software distributed under the License is distributed on an "AS IS" BASIS, NO WARRANTIES OR CONDITIONS OF ANY KIND, explicit or implicit. See the License for details on permissions and limitations.*/
