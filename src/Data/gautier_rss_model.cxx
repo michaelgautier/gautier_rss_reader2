@@ -1,19 +1,4 @@
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <tuple>
-#include <map>
-
-#include <sqlite3.h>
-
 #include <gautier_rss_model.hxx>
-
-#include <cstdio>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
 
 using type_list_size = std::vector<void*>::size_type;
 

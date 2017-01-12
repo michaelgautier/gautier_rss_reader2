@@ -1,31 +1,16 @@
-#include <string>
-#include <iostream>
-#include <vector>
-#include <cmath>
-
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_color.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
-
 #include <PrimaryDisplaySurfaceWindow.hxx>
-#include <InteractionState.hxx>
-#include <dlib/geometry.h>
-
-/*
+        /*
 	Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 . Software distributed under the License is distributed on an "AS IS" BASIS, NO WARRANTIES OR CONDITIONS OF ANY KIND, explicit or implicit. See the License for details on permissions and limitations.
 */
 static std::string 
         _DefaultWindowTitle = "Gautier Frame";
 
-static int _EventIter = 0;
-	
 static constexpr double 
         _AvgPhysicalScreenSize = 13.667, _PrintPointSize = 72.0;
 
 static double 
         _ScreenDpiLast = 96;
+
 gautier::graphics::PrimaryDisplaySurfaceWindow::PrimaryDisplaySurfaceWindow() {
         Initialize();
         
@@ -56,15 +41,6 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Initialize() {
 			_InteractionState.MonitorWidth = _WinScreenInfo.x2-_WinScreenInfo.x1;
 			_InteractionState.MonitorHeight = _WinScreenInfo.y2-_WinScreenInfo.y1;
 
-			/*
-				At the point I implement resolution change detection code, 
-				can set _dpi_info_cached = false to allow the dpi to pickup;
-			*/
-			double ScreenDpi;
-			GetScreenDpi(ScreenDpi);
-			
-			std::cout << "estimated dpi: " << ScreenDpi << "\r\n";
-
 			_WinCtx = al_create_display(_InteractionState.MonitorWidth, _InteractionState.MonitorHeight);
 
                         if(_WinCtx) {
@@ -83,9 +59,9 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Initialize() {
 
 		                if(!al_is_mouse_installed()) {
 			                al_install_mouse();
-			                
+
 			                _MouseEvtSrc = al_get_mouse_event_source();
-		
+
 			                al_register_event_source(_WinMsgEvtQueue, _MouseEvtSrc);
 		                }
                         }
@@ -108,29 +84,16 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Activate(InteractionCallBac
         _InteractionCallBack = interactionCallBack;
 	while(_InteractionState.IsWindowOpen && _WinMsgEvtQueue) {
                 _InteractionStateLast = _InteractionState;
-	        //std::cout << "Event Iter " << _EventIter << "\r\n";
-	        _EventIter++;
 
 		ALLEGRO_EVENT_TYPE window_event_type = _winmsg_event.type;
 
-	        //std::cout << "window event" << _winmsg_event.type << "\r\n";
-		
-		/*
-		        Right before the display closes, you may see switch in, switch out, then close.
-		*/
-		switch(window_event_type) {
-			case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
-			        //std::cout << "Switching in display - The window is active\r\n";
-			        break;
-			case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
-			        //std::cout << "Switching out display - The window is inactive\r\n";
-			        break;
+                std::cout << "event type " << window_event_type << "\r\n";
+
+		switch (window_event_type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-			        //std::cout << "window close\r\n";
 				_InteractionState.IsWindowOpen = false;
 			        break;
 			case ALLEGRO_EVENT_DISPLAY_RESIZE:
-			        //std::cout << "resize\r\n";
 				al_acknowledge_resize(_WinCtx);
 				
 				_InteractionState.WindowWidth = _winmsg_event.display.width;
@@ -138,28 +101,19 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Activate(InteractionCallBac
                                 _InteractionState.WindowDimensions = dlib::drectangle(0,0,_InteractionState.WindowWidth, _InteractionState.WindowHeight);
 
 				_InteractionState.IsWindowResized = true;	
-			        //std::cout << _InteractionState.WindowWidth << "/" << _InteractionState.WindowHeight << "\r\n";
 			        break;
 	                case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
-	                        //std::cout << "evt mouse up\r\n";
-	                        _InteractionState.IsMouseUp = true;
-	                        _InteractionState.IsMouseDown = false;
-		                break;
 	                case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-	                        //std::cout << "evt mouse up\r\n";
-	                        _InteractionState.IsMouseUp = false;
-	                        _InteractionState.IsMouseDown = true;
+	                        _InteractionState.IsMouseUp = (window_event_type == ALLEGRO_EVENT_MOUSE_BUTTON_UP);
+	                        _InteractionState.IsMouseDown = (window_event_type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN);
 	                        break;
 	                case ALLEGRO_EVENT_MOUSE_AXES:
 	                        _InteractionState.MouseDirection = _winmsg_event.mouse.dz;
-	                        //std::cout << "evt mouse direction " << _InteractionState.MouseDirection << "\r\n";
 	                        break;
                 }
 
                 _InteractionState.MousePosition = dlib::dpoint(_winmsg_event.mouse.x, _winmsg_event.mouse.y);
                 _InteractionState.MouseButton = _winmsg_event.mouse.button;
-
-                //std::cout << "evt mouse direction " << _InteractionState.MouseDirection << "\r\n";
 
                 if(_InteractionState.IsWindowOpen) {
                         if(_WinCtx) {
@@ -170,8 +124,6 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Activate(InteractionCallBac
                                 if(IsVisualModelChanged) {
                                         StartRenderGraphics();
 
-                                        //std::cout << "visual callback: changed " << IsVisualModelChanged << "\r\n";
-
                                         interactionCallBack(_InteractionState);
 
                                         EndRenderGraphics();
@@ -180,7 +132,7 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Activate(InteractionCallBac
 
                         _InteractionStateLast = _InteractionState;
 
-                        al_wait_for_event_timed(_WinMsgEvtQueue, &_winmsg_event, 0.1);
+                        al_wait_for_event_timed(_WinMsgEvtQueue, &_winmsg_event, 0.3);
                 }
                 else {
 		        Release();
@@ -242,9 +194,7 @@ bool gautier::graphics::PrimaryDisplaySurfaceWindow::GetIsVisualModelChanged(gau
         bool IsChanged = (now.IsVisualModelChanged || now.IsWindowResized || now.IsMouseDown || now.IsMouseUp);
 
         if(!IsChanged) {
-                IsChanged = (old.WindowWidth != now.WindowWidth || old.WindowHeight != now.WindowHeight 
-                 || old.MouseButton != now.MouseButton || old.MouseDirection != now.MouseDirection 
-                 || old.WindowDimensions != now.WindowDimensions || old.MousePosition != now.MousePosition);
+                IsChanged = (old != now);
         }
         
         return IsChanged;
@@ -295,34 +245,32 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::LoadFont() {
                 _Font = al_load_font(_FontPath, ScaledFontSizeD, 0);
 
                 if(_Font) {
-                        std::vector<char> 
-                                TextToMeasure = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','z','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','Z','Y','Z','1','2','3','4','5','6','8','9','0','~','!','@','#','$','%','^','&','*','(',')','_','+','-','=','{','}','[',']','|','\\',':',';','<','>','?',',','.','/','\0'}; 
+                        char
+                                TextToMeasure[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','z','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','Z','Y','Z','1','2','3','4','5','6','8','9','0','~','!','@','#','$','%','^','&','*','(',')','_','+','-','=','{','}','[',']','|','\\',':',';','<','>','?',',','.','/','\0'}; 
 
                         const char* 
-                                SampleText = TextToMeasure.data();
+                                SampleText = TextToMeasure;
 
                         MeasureLineHeight(SampleText);
 
-                        if(TextToMeasure.size() > 0) {
-                                int FontBoxX = 0, FontBoxY = 0, FontBoxW = 0, FontBoxH = 0;
+                        int FontBoxX = 0, FontBoxY = 0, FontBoxW = 0, FontBoxH = 0;
 
-                                std::vector<double>
-                                        FontBoxWs;
+                        std::vector<double>
+                                FontBoxWs;
 
-                                double FontBoxWm = 0;
+                        double FontBoxWm = 0;
 
-                                for(auto txt : TextToMeasure) {
-                                        char Letter[] = {txt, '\0'};
+                        for(auto txt : TextToMeasure) {
+                                char Letter[] = {txt, '\0'};
 
-                                        al_get_text_dimensions(_Font, Letter, &FontBoxX, &FontBoxY, &FontBoxW, &FontBoxH);
+                                al_get_text_dimensions(_Font, Letter, &FontBoxX, &FontBoxY, &FontBoxW, &FontBoxH);
 
-                                        FontBoxWm += FontBoxW;
+                                FontBoxWm += FontBoxW;
 
-                                        FontBoxWs.push_back(FontBoxW);
-                                }
-
-                                _FontBoxW = FontBoxWm/FontBoxWs.size();
+                                FontBoxWs.push_back(FontBoxW);
                         }
+
+                        _FontBoxW = FontBoxWm/FontBoxWs.size();
                 }
                 else {
                         std::cout << __FILE__ " " << __func__ << " " << "(" << __LINE__ << ") ";

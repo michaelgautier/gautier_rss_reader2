@@ -1,13 +1,18 @@
 #ifndef __gautier_rss_model__
 #define __gautier_rss_model__
 
-#include <string>
+#include <cstdio>
+
+#include <algorithm>
+#include <fstream>
+#include <iostream>
 #include <map>
+#include <memory>
+#include <sstream>
 #include <vector>
 
 #include <sqlite3.h>
 
-#include <cstdio>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 

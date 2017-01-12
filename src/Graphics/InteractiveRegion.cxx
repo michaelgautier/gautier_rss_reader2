@@ -1,13 +1,4 @@
-#include <iostream>
-#include <cmath>
-
 #include <InteractiveRegion.hxx>
-#include <dlib/geometry.h>
-
-#include <allegro5/allegro_color.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
 
 static double 
         _ScrollBarWidth = 40, _ScrollYOffset = 24;
@@ -42,7 +33,7 @@ void gautier::graphics::InteractiveRegion::UpdateScrollTrack(const double& top) 
         double 
                 DTop = std::abs(_RegionDimensions.top()-top);
 
-        if(_RegionDimensions == _EmptyRect) {
+        if(_RegionDimensions.left() == _EmptyRect.left() && _RegionDimensions.top() == _EmptyRect.top() && _RegionDimensions.right() == _EmptyRect.right() && _RegionDimensions.bottom() == _EmptyRect.bottom()) {
                 _ScrollTrackYTop = top;
                 _ScrollTrackYBottom = _ScrollTrackYTop+(_ScrollYOffset*2);
         }
@@ -170,7 +161,7 @@ void gautier::graphics::InteractiveRegion::SetMouseClick(bool const& leftButton,
 
                         SetMouseChange(mouseDirection, mousePosition);
                 }
-                else if (IsLeftMouseUp) {
+                else if (IsLeftMouseUp && !IsMouseInVScrollLane) {
                         //std::cout << "Left Mouse Click \r\n";
                         
                         const double MouseY = (mousePosition.y() + (_VisibleTextIndexStart * _FontBoxH));

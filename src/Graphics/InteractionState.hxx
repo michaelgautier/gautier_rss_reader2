@@ -32,7 +32,23 @@ struct InteractionState {
 
         dlib::dpoint 
                 WindowPosition;
+                
 };
+
+inline bool operator ==(const InteractionState& lhs, const InteractionState& rhs) {
+        bool BoolsEqual = (lhs.IsWindowOpen == rhs.IsWindowOpen && lhs.IsWindowResized == rhs.IsWindowResized && lhs.IsMouseDown == rhs.IsMouseDown && lhs.IsMouseUp == rhs.IsMouseUp && lhs.IsVisualModelChanged == rhs.IsVisualModelChanged);
+        bool IntsEqual = (lhs.MonitorWidth == rhs.MonitorWidth && lhs.MonitorHeight == rhs.MonitorHeight && lhs.WindowWidth == rhs.WindowWidth && lhs.WindowHeight == rhs.WindowHeight && lhs.MouseButton == rhs.MouseButton && lhs.MouseDirection == rhs.MouseDirection);
+        bool WindowDimensionsEqual = (lhs.WindowDimensions.left() == rhs.WindowDimensions.left() && lhs.WindowDimensions.top() == rhs.WindowDimensions.top() && lhs.WindowDimensions.right() == rhs.WindowDimensions.right() && lhs.WindowDimensions.bottom() == rhs.WindowDimensions.bottom());
+        bool MousePositionEqual = (lhs.MousePosition.x() == rhs.MousePosition.x() && lhs.MousePosition.y() == rhs.MousePosition.y());
+        bool WindowPositionEqual = (lhs.WindowPosition.x() == rhs.WindowPosition.x() && lhs.WindowPosition.y() == rhs.WindowPosition.y());
+
+        return (BoolsEqual && IntsEqual && WindowDimensionsEqual && MousePositionEqual && WindowPositionEqual);
+}
+
+inline bool operator !=(const InteractionState& lhs, const InteractionState& rhs) {
+        return !(lhs == rhs);
+}
+
         }
 }
 #endif
