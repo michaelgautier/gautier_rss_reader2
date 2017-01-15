@@ -3,16 +3,16 @@ ISrcGraphics := $(ISrc)/Graphics
 ISrcProgram := $(ISrc)/Program
 ISrcData := $(ISrc)/Data
 
-CPPLink := $(CXX) -O3 
-CPPCompile := $(CXX) -std=c++14 -c -O3 
+CPPLink := $(CXX) -g 
+CPPCompile := $(CXX) -std=c++14 -c -g 
 #-Wextra -Wall -Wpedantic -Wconversion-null -Wctor-dtor-privacy -Wdelete-non-virtual-dtor -Wliteral-suffix -Wmultiple-inheritance -Wnarrowing -Wnoexcept -Wnon-virtual-dtor -Wreorder -Wstrict-null-sentinel -Wtemplates -Wno-non-template-friend  -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wvirtual-inheritance
 #Optmize -O3
 
 #Note on 12/14/2016 8:47pm, exe went from 6MB to 14MB with the addition of the sqlite and libxml2 libraries.
 
 #downside of make is no warnings if the filename is invalid.
-gautier_rss : obj/main.o obj/PrimaryDisplaySurfaceWindow.o obj/RssReader.o obj/InteractiveRegion.o obj/gautier_rss_model.o 
-	$(CPPLink) -lxml2 -ldlib -lsqlite3 -lallegro -lallegro_font -lallegro_ttf -lallegro_primitives -o $@ obj/main.o obj/PrimaryDisplaySurfaceWindow.o obj/RssReader.o obj/InteractiveRegion.o obj/gautier_rss_model.o 
+gautier_rss : obj/main.o obj/PrimaryDisplaySurfaceWindow.o obj/RssReader.o obj/InteractiveRegion.o obj/gautier_rss_model.o obj/RssDisplay.o 
+	$(CPPLink) -lxml2 -ldlib -lsqlite3 -lallegro -lallegro_font -lallegro_ttf -lallegro_primitives -o $@ obj/main.o obj/PrimaryDisplaySurfaceWindow.o obj/RssReader.o obj/InteractiveRegion.o obj/gautier_rss_model.o obj/RssDisplay.o 
 
 obj/InteractiveRegion.o : $(ISrcGraphics)/InteractiveRegion.cxx \
 	$(ISrcGraphics)/InteractiveRegion.hxx 
@@ -23,12 +23,22 @@ obj/PrimaryDisplaySurfaceWindow.o : $(ISrcGraphics)/PrimaryDisplaySurfaceWindow.
 	$(ISrcGraphics)/PrimaryDisplaySurfaceWindow.hxx 
 	$(CPPCompile) -ldlib -I$(ISrcGraphics) -o $@ $< 
 
+obj/RssDisplay.o : $(ISrcProgram)/RssDisplay.cxx \
+	$(ISrcProgram)/RssDisplay.hxx \
+	$(ISrcGraphics)/InteractiveRegion.hxx \
+	$(ISrcGraphics)/InteractionState.hxx \
+	$(ISrcGraphics)/InteractiveDisplay.hxx \
+	$(ISrcGraphics)/PrimaryDisplaySurfaceWindow.hxx \
+	$(ISrcData)/gautier_rss_model.hxx 
+	$(CPPCompile) -I/usr/include/libxml2 -lxml2 -I$(ISrcGraphics) -I$(ISrcProgram) -I$(ISrcData) -o $@ $< 
+
 obj/RssReader.o : $(ISrcProgram)/RssReader.cxx \
+	$(ISrcProgram)/RssReader.hxx \
 	$(ISrcGraphics)/PrimaryDisplaySurfaceWindow.hxx \
 	$(ISrcGraphics)/InteractiveRegion.hxx \
 	$(ISrcGraphics)/InteractionState.hxx \
-	$(ISrcData)/gautier_rss_model.hxx \
-	$(ISrcProgram)/RssReader.hxx 
+	$(ISrcGraphics)/InteractiveDisplay.hxx \
+	$(ISrcProgram)/RssDisplay.hxx 
 	$(CPPCompile) -I/usr/include/libxml2 -lxml2 -I$(ISrcGraphics) -I$(ISrcProgram) -I$(ISrcData) -o $@ $< 
 
 obj/gautier_rss_model.o : $(ISrcData)/gautier_rss_model.cxx \
@@ -36,7 +46,7 @@ obj/gautier_rss_model.o : $(ISrcData)/gautier_rss_model.cxx \
 	$(CPPCompile) -I/usr/include/libxml2 -lxml2 -I$(ISrcData) -o $@ $<
 
 obj/main.o : $(ISrc)/main.cxx \
-	$(ISrcProgram)/RssReader.hxx
+	$(ISrcProgram)/RssReader.hxx 
 	rm -rf obj/ 
 	mkdir obj 
 	$(CPPCompile) -I/usr/include/libxml2 -lxml2 -lallegro5_ttf -I$(ISrcGraphics) -I$(ISrcProgram) -I$(ISrcData) -o $@ $< 
