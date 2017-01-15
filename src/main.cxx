@@ -7,10 +7,6 @@ static gautier::program::RssReader
         _RssReader;
 
 int main(int argc, char **argv) {
-        if(argc > 0 && argv) {
-                std::cout << "args " << argc << "\r\n";
-        }
-
 	_RssReader.Start();
 	
 	return 0;

@@ -48,8 +48,8 @@ void gautier::graphics::InteractiveRegion::UpdateScrollTrack(const double& top) 
 }
 void gautier::graphics::InteractiveRegion::SetFont(ALLEGRO_FONT* font, int const& fontBoxX, int const& fontBoxY, int const& fontBoxW, int const& fontBoxH) {
         if(!font) {
-                std::cout << __FILE__ " " << __func__ << " " << "(" << __LINE__ << ") ";
-                std::cout << " font not initialized\r\n";
+                //std::cout << __FILE__ " " << __func__ << " " << "(" << __LINE__ << ") ";
+                //std::cout << " font not initialized\r\n";
         }
         
         _Font = font;
@@ -184,7 +184,7 @@ void gautier::graphics::InteractiveRegion::SetMouseClick(bool const& leftButton,
                                 const double TextBottomY = (TextIndex+1) * _FontBoxH;
 
                                 if(MouseY > TextTopY && MouseY < TextBottomY) {
-                                        std::cout << "Mouse Left Clicked on " << v << " line " << TextIndex << "\r\n";
+                                        //std::cout << "Mouse Left Clicked on " << v << " line " << TextIndex << "\r\n";
                                         
                                         _InteractionCallBack(TextIndex);
 
@@ -273,8 +273,8 @@ void gautier::graphics::InteractiveRegion::RenderText() {
 		                                }
 			                }
 			                else {
-                                                std::cout << __FILE__ " " << __func__ << " " << "(" << __LINE__ << ") ";
-			                        std::cout << "font invalid\r\n";
+                                                //std::cout << __FILE__ " " << __func__ << " " << "(" << __LINE__ << ") ";
+			                        //std::cout << "font invalid\r\n";
 			                        break;
 			                }
 		                }

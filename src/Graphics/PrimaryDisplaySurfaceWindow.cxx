@@ -3,7 +3,7 @@
 	Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 . Software distributed under the License is distributed on an "AS IS" BASIS, NO WARRANTIES OR CONDITIONS OF ANY KIND, explicit or implicit. See the License for details on permissions and limitations.
 */
 static std::string 
-        _DefaultWindowTitle = "Gautier Frame";
+        _DefaultWindowTitle = "Gautier RSS";
 
 static constexpr double 
         _AvgPhysicalScreenSize = 13.667, _PrintPointSize = 72.0;
@@ -30,7 +30,7 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Initialize() {
 	if(_IsAllegroInitialized) {
 		al_init_font_addon();
 		al_init_ttf_addon();
-	
+
 		al_set_new_display_flags(ALLEGRO_MAXIMIZED | ALLEGRO_RESIZABLE | ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_OPENGL);
 		al_set_new_display_option(ALLEGRO_RENDER_METHOD, true, ALLEGRO_SUGGEST);
 		al_set_new_display_option(ALLEGRO_FLOAT_COLOR, true, ALLEGRO_SUGGEST);
@@ -86,8 +86,6 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Activate(InteractionCallBac
                 _InteractionStateLast = _InteractionState;
 
 		ALLEGRO_EVENT_TYPE window_event_type = _winmsg_event.type;
-
-                std::cout << "event type " << window_event_type << "\r\n";
 
 		switch (window_event_type) {
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:

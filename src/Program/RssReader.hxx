@@ -1,10 +1,11 @@
 #ifndef __gautier_program_RssReader__
 #define __gautier_program_RssReader__
 
-#include <dlib/geometry.h>
 #include <PrimaryDisplaySurfaceWindow.hxx>
 #include <InteractionState.hxx>
 #include <InteractiveRegion.hxx>
+#include <InteractiveDisplay.hxx>
+#include <RssDisplay.hxx>
 
 #include <gautier_rss_model.hxx>
 
@@ -16,49 +17,23 @@ namespace gautier {
 class RssReader {
 	public:
 	RssReader();
-	void Start();
-        void ProcessUpdates(const gautier::graphics::InteractionState&);
+	~RssReader();
 
-        void CallBackFeeds(int lineNumber);
-        void CallBackFeedHeadlines(int lineNumber);
-        void CallBackFeedDetails(int lineNumber);
+	void Start();
+        void ProcessUpdates(const gautier::graphics::InteractionState& interactionState);
 	
 	private:
-        void InitializeData();
-        void BuildVisualModel(const gautier::graphics::InteractionState&);
-        void ProcessInteractions(const gautier::graphics::InteractionState&);
-        void ProcessData();
-        void UpdateVisualOutput();
-        void LoadFont();
-        
-        bool
-                _DataInitialized = false;
-
-        gautier::graphics::InteractionState 
-                _InteractionState;
-
-        std::vector<std::string> 
-                _Feeds, _FeedsUrls,
-                _FeedHeadlines, _FeedHeadlineUrls,
-                _FeedDetails;
-
         ALLEGRO_FONT* 
                 _Font = nullptr;
 
         int 
                 _FontBoxX, _FontBoxY, _FontBoxW, _FontBoxH;
 
-        std::map<std::string, gautier::rss_model::unit_type_rss_source> 
-                _rss_feed_sources;
+        gautier::graphics::InteractiveDisplay* 
+                _InteractiveDisplay;
 
-        std::map<std::string, std::vector<gautier::rss_model::unit_type_rss_item>> 
-                _rss_feed_items;
-
-        gautier::rss_model 
-                _RssDataModel;
-
-        std::string 
-                _CurrentFeedSourceName;
+        gautier::graphics::InteractionState 
+                _InteractionState;
 };
         }
 }
