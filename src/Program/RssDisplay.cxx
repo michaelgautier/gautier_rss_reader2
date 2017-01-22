@@ -23,7 +23,7 @@ gautier::program::RssDisplay::~RssDisplay() {
 
         return;
 }
-void gautier::program::RssDisplay::BuildVisualModel(gautier::graphics::InteractionState const& interactionState, gautier::graphics::PrimaryDisplaySurfaceWindow& disp) {
+void gautier::program::RssDisplay::BuildVisualModelImpl(gautier::graphics::InteractionState const& interactionState, gautier::graphics::PrimaryDisplaySurfaceWindow& disp) {
         if(!_Font) {
                 disp.GetFont(_Font, _FontBoxX, _FontBoxY, _FontBoxW, _FontBoxH);
         }
@@ -87,7 +87,7 @@ void gautier::program::RssDisplay::BuildVisualModel(gautier::graphics::Interacti
 
         return;
 }
-void gautier::program::RssDisplay::ProcessInteractions(gautier::graphics::InteractionState const& interactionState, std::vector<InteractiveDisplay*>& displays) {
+void gautier::program::RssDisplay::ProcessInteractionsImpl(gautier::graphics::InteractionState const& interactionState, std::vector<InteractiveDisplay*>& displays) {
         int 
                 MouseDirection = interactionState.MouseDirection,
                 MouseButton = interactionState.MouseButton;
@@ -179,7 +179,7 @@ void gautier::program::RssDisplay::CallBackFeedDetails(int lineNumber) {
 
         return;
 }
-void gautier::program::RssDisplay::UpdateVisualOutput() {
+void gautier::program::RssDisplay::UpdateVisualOutputImpl() {
         for(auto& r : _Regions) {
                 r.RenderSelf();
         }

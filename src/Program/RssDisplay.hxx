@@ -16,9 +16,6 @@ class RssDisplay : public gautier::graphics::InteractiveDisplay {
 	public:
 	RssDisplay();
 	~RssDisplay();
-        void BuildVisualModel(gautier::graphics::InteractionState const& interactionState, gautier::graphics::PrimaryDisplaySurfaceWindow& disp);
-        void ProcessInteractions(gautier::graphics::InteractionState const& interactionState, std::vector<InteractiveDisplay*>& displays);
-        void UpdateVisualOutput();
         void CallBackFeedDetails(int lineNumber);
         void CallBackFeedHeadlines(int lineNumber);
         void CallBackFeeds(int lineNumber);
@@ -26,6 +23,11 @@ class RssDisplay : public gautier::graphics::InteractiveDisplay {
         private:
         void InitializeData();
         void ProcessData();
+
+        void BuildVisualModelImpl(gautier::graphics::InteractionState const& interactionState, gautier::graphics::PrimaryDisplaySurfaceWindow& disp);
+        void ProcessInteractionsImpl(gautier::graphics::InteractionState const& interactionState, std::vector<InteractiveDisplay*>& displays);
+        void UpdateVisualOutputImpl();
+
 
         ALLEGRO_FONT* 
                 _Font = nullptr;

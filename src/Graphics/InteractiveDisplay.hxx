@@ -10,9 +10,19 @@ namespace gautier {
         namespace graphics {
 class InteractiveDisplay {
 	public:
-        virtual void BuildVisualModel(gautier::graphics::InteractionState const& interactionState, gautier::graphics::PrimaryDisplaySurfaceWindow& disp){};
-        virtual void ProcessInteractions(gautier::graphics::InteractionState const& interactionState, std::vector<InteractiveDisplay*>& displays){};
-        virtual void UpdateVisualOutput(){};
+        void BuildVisualModel(gautier::graphics::InteractionState const& interactionState, gautier::graphics::PrimaryDisplaySurfaceWindow& disp) {
+                BuildVisualModelImpl(interactionState, disp);
+        };
+        void ProcessInteractions(gautier::graphics::InteractionState const& interactionState, std::vector<InteractiveDisplay*>& displays) {
+                ProcessInteractionsImpl(interactionState, displays);
+        };
+        void UpdateVisualOutput() {
+                UpdateVisualOutputImpl();
+        };
+        private:
+        virtual void BuildVisualModelImpl(gautier::graphics::InteractionState const& interactionState, gautier::graphics::PrimaryDisplaySurfaceWindow& disp) {};
+        virtual void ProcessInteractionsImpl(gautier::graphics::InteractionState const& interactionState, std::vector<InteractiveDisplay*>& displays) {};
+        virtual void UpdateVisualOutputImpl() {};
 };
         }
 }
