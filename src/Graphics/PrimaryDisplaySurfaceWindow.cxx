@@ -32,10 +32,7 @@ void gautier::graphics::PrimaryDisplaySurfaceWindow::Initialize() {
 		al_init_ttf_addon();
 
 		al_set_new_display_flags(ALLEGRO_RESIZABLE | ALLEGRO_MAXIMIZED | ALLEGRO_GENERATE_EXPOSE_EVENTS);
-		al_set_new_display_option(ALLEGRO_RENDER_METHOD, true, ALLEGRO_SUGGEST);
 		al_set_new_display_option(ALLEGRO_FLOAT_COLOR, true, ALLEGRO_SUGGEST);
-		al_set_new_display_option(ALLEGRO_SINGLE_BUFFER, false, ALLEGRO_SUGGEST);
-		al_set_new_display_option(ALLEGRO_SWAP_METHOD, true, ALLEGRO_SUGGEST);
 		
 		bool IsMonitorInfoAvailable = al_get_monitor_info(0, &_WinScreenInfo);
 
